@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Damage to H:M:S:MS Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input, button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Damage to H:M:S:MS Converter</h1>
+
+    <input type="text" id="secondsInput" placeholder="Enter seconds" oninput="formatInput()">
+    <button onclick="convertSeconds()">Convert</button>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        function formatInput() {
+            var input = document.getElementById("secondsInput").value;
+            // Remove all non-numeric characters
+            input = input.replace(/[^0-9]/g, '');
+            // Format the input value, no commas or decimal points in the input field
+            document.getElementById("secondsInput").value = input;
+        }
+
+        function convertSeconds() {
+            var input = document.getElementById("secondsInput").value;
+            if (input === '') {
+                document.getElementById("result").innerHTML = "Please enter a valid number.";
+                return;
+            }
+
+            // Ensure that the input has at least 3 digits
+            var formattedInput = input;
+            if (input.length > 3) {
+                // Insert decimal point 3 digits from the end for calculations
+                formattedInput = input.slice(0, -3) + '.' + input.slice(-3);
+            } else {
+                // If less than 3 digits, treat it as a whole number in seconds
+                formattedInput = '0.' + input.padStart(3, '0');
+            }
+
+            // Parse the formatted input value
+            var seconds = parseFloat(formattedInput);
+            if (isNaN(seconds)) {
+                document.getElementById("result").innerHTML = "Please enter a valid number.";
+                return;
+            }
+
+            // Calculate hours, minutes, seconds, and milliseconds
+            var hours = Math.floor(seconds / 3600);
+            var minutes = Math.floor((seconds % 3600) / 60);
+            var secs = Math.floor(seconds % 60);
+            var milliseconds = Math.floor((seconds - Math.floor(seconds)) * 1000);
+
+            // Format the result without commas and decimal points for display
+            var result = hours.toString().padStart(2, '0') + "h " +
+                         minutes.toString().padStart(2, '0') + "m " +
+                         secs.toString().padStart(2, '0') + "s " +
+                         milliseconds.toString().padStart(3, '0') + "ms";
+
+            document.getElementById("result").innerHTML = result;
+        }
+    </script>
+
+</body>
+</html>
